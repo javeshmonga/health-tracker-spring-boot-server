@@ -14,9 +14,15 @@ public class User {
 	private int id;
 	private String username;
 	private String password;
-	@OneToOne (mappedBy="user")
+	@OneToOne
 	private Schedule schedule;
 	
+	public Schedule getSchedule() {
+		return schedule;
+	}
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
 	public int getId() {
 		return id;
 	}

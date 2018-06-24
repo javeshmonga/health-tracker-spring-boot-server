@@ -16,16 +16,19 @@ public class Schedule {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String title;
+	
+	@OneToMany(mappedBy="schedule",orphanRemoval=true)
+	private List<Day> days;
+	
+	@OneToOne
+	private User user;
+	
 	public User getUser() {
 		return user;
 	}
 	public void setUser(User user) {
 		this.user = user;
 	}
-	@OneToMany(mappedBy="schedule",orphanRemoval=true)
-	private List<Day> days;
-	@OneToOne (mappedBy="schedule")
-	private User user;
 	
 	public List<Day> getDays() {
 		return days;
