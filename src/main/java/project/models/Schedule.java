@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity
 public class Schedule {
@@ -19,16 +18,6 @@ public class Schedule {
 	
 	@OneToMany(mappedBy="schedule",orphanRemoval=true)
 	private List<Day> days;
-	
-	@OneToOne
-	private User user;
-	
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
 	
 	public List<Day> getDays() {
 		return days;

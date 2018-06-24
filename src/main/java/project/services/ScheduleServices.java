@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.models.Schedule;
+import project.models.User;
 import project.repositories.ScheduleRepository;
 
 @RestController
@@ -24,10 +25,6 @@ public class ScheduleServices {
 		return scheduleRepository.findAll(); 
 	}
 	
-	@PostMapping("/api/schedule")
-	public Schedule createSchedule(@RequestBody Schedule schedule) {
-		return scheduleRepository.save(schedule);
-	}
 	
 	@DeleteMapping("/api/schedule/{scheduleId}")
 	public void deleteSchedule(@PathVariable("scheduleId") int id) {
