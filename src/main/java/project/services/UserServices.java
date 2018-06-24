@@ -1,5 +1,7 @@
 package project.services;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,17 +23,26 @@ public class UserServices {
 	
 	@GetMapping("/api/user")
 	public Iterable<User> findAllUsers() {
-		return userRepository.findAll(); 
+        return userRepository.findAll();
+    }
+	
+	@PostMapping("/api/register")
+	public User register(@RequestBody User user, HttpSession session) {
+		User newUser = userRepository.save(user);
+		session.setAttribute("currentUser", newUser);
+		return newUser;
 	}
 	
-	@PostMapping("/api/user")
-	public User createSchedule(@RequestBody User user) {
-		return userRepository.save(user);
+	@GetMapping("/api/profile")
+	public User profile(HttpSession session) {
+		User currentUser = (User)session.getAttribute("currentUser");    
+		return currentUser;
 	}
 	
-	@DeleteMapping("/api/user/{userId}")
-	public void deleteSchedule(@PathVariable("userId") int id) {
-		userRepository.deleteById(id);
+	@DeleteMapping("/api/logout")
+	public void logout(HttpSession session) {
+	    session.invalidate();
 	}
-	
+
+
 }
