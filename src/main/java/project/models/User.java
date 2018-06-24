@@ -1,5 +1,6 @@
 package project.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +15,35 @@ public class User {
 	private int id;
 	private String username;
 	private String password;
-	@OneToOne
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getUserType() {
+		return userType;
+	}
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String userType;
+	@OneToOne (cascade = {CascadeType.ALL})
 	private Schedule schedule;
 	
 	public Schedule getSchedule() {

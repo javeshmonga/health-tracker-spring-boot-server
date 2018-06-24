@@ -19,6 +19,8 @@ import project.repositories.UserRepository;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class UserServices {
 
+	private User currentUser;
+	
 	@Autowired
 	UserRepository userRepository;
 	
@@ -35,7 +37,9 @@ public class UserServices {
 	}
 	
 	@PostMapping("/api/register")
-	public User register(@RequestBody User user, HttpSession session) {
+	public User register(@RequestBody User user) {
+		
+		this.currentUser = null;
 		
 		if (findUserByUsername(user.getUsername()) != null) {
 			user.setUsername(null);
@@ -44,36 +48,44 @@ public class UserServices {
 		
 		User newUser = userRepository.save(user);
 		
-		String title = "Schedule_" + newUser.getUsername();
-		Schedule schedule = new Schedule();
-		schedule.setTitle(title);
+		if (user.getUserType().equals("Member")) {
+			String title = "Schedule_" + newUser.getUsername();
+			Schedule schedule = new Schedule();
+			schedule.setTitle(title);
+			
+			newUser.setSchedule(schedule);
+			scheduleRepository.save(schedule);
+		}
+		else {
+			newUser.setSchedule(null);
+		}
 		
-		newUser.setSchedule(schedule);
-		
-		session.setAttribute("currentUser", newUser);
-		scheduleRepository.save(schedule);
+		this.currentUser = newUser;
 		return newUser;
 	}
 	
 	@GetMapping("/api/profile")
-	public User profile(HttpSession session) {
-		User currentUser = (User)session.getAttribute("currentUser");    
+	public User profile() {
+		User currentUser = this.currentUser;   
 		return currentUser;
 	}
 	
 	@DeleteMapping("/api/logout")
-	public void logout(HttpSession session) {
-	    session.invalidate();
+	public void logout() {
+	    this.currentUser = null;
 	}
 	
 	@PostMapping("/api/login")
-	public User login(@RequestBody User user, HttpSession session) {
+	public User login(@RequestBody User user) {
+		
+		this.currentUser = null;
+		
 		User resultUser = userRepository.findUserByCredentials(user.getUsername(), user.getPassword());
 		if(resultUser == null) {
 			user.setUsername(null);
 			return user;
 		}
-		session.setAttribute("currentUser", resultUser);
+		this.currentUser = resultUser;
 		return resultUser;
 	}
 
