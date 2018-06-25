@@ -51,7 +51,7 @@ public class UserServices {
 		User newUser = userRepository.save(user);
 		
 		if (user.getUserType().equals("Member")) {
-			String title = "Schedule_" + newUser.getUsername();
+			String title = newUser.getUsername() + "'s Schedule";
 			Schedule schedule = new Schedule();
 			schedule.setTitle(title);
 			
