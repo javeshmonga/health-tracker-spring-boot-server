@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -87,6 +88,30 @@ public class UserServices {
 		}
 		this.currentUser = resultUser;
 		return resultUser;
+	}
+	
+	@PostMapping("/api/user/update")
+	public User updateUser(@RequestBody User newUser) {
+		User user = userRepository.findUserByUsername(newUser.getUsername());
+		if (user == null) {
+			newUser.setUsername(null);
+			return newUser;
+		}
+		else {
+			user.setFirstName(newUser.getFirstName());
+			user.setLastName(newUser.getLastName());
+			
+			if(newUser.getPassword() != "") {
+				user.setPassword(newUser.getPassword());
+			}
+			
+			user.setEmail(newUser.getEmail());
+			user.setSchedule(newUser.getSchedule());
+			
+			User resultUser = userRepository.save(user);
+			this.currentUser = resultUser;
+			return resultUser;
+		}
 	}
 
 
