@@ -40,9 +40,7 @@ public class UserServices {
 	
 	@PostMapping("/api/register")
 	public User register(@RequestBody User user) {
-		
-		this.currentUser = null;
-		
+				
 		if (findUserByUsername(user.getUsername()) != null) {
 			user.setUsername(null);
 			return user;
@@ -63,6 +61,31 @@ public class UserServices {
 		}
 		
 		this.currentUser = newUser;
+		return newUser;
+	}
+	
+	@PostMapping("/api/register/admin")
+	public User adminRegisterUser(@RequestBody User user) {
+				
+		if (findUserByUsername(user.getUsername()) != null) {
+			user.setUsername(null);
+			return user;
+		}
+		
+		User newUser = userRepository.save(user);
+		
+		if (user.getUserType().equals("Member")) {
+			String title = newUser.getUsername() + "'s Schedule";
+			Schedule schedule = new Schedule();
+			schedule.setTitle(title);
+			
+			newUser.setSchedule(schedule);
+			scheduleRepository.save(schedule);
+		}
+		else {
+			newUser.setSchedule(null);
+		}
+		
 		return newUser;
 	}
 	
@@ -111,6 +134,29 @@ public class UserServices {
 			
 			User resultUser = userRepository.save(user);
 			this.currentUser = resultUser;
+			return resultUser;
+		}
+	}
+	
+	@PostMapping("/api/user/update/admin")
+	public User adminUpdateUser(@RequestBody User newUser) {
+		User user = userRepository.findUserByUsername(newUser.getUsername());
+		if (user == null) {
+			newUser.setUsername(null);
+			return newUser;
+		}
+		else {
+			user.setFirstName(newUser.getFirstName());
+			user.setLastName(newUser.getLastName());
+			
+			if(newUser.getPassword() != "") {
+				user.setPassword(newUser.getPassword());
+			}
+			
+			user.setEmail(newUser.getEmail());
+			user.setSchedule(newUser.getSchedule());
+			
+			User resultUser = userRepository.save(user);
 			return resultUser;
 		}
 	}
